@@ -1,10 +1,13 @@
+from django.urls import path,include
 from rest_framework.routers import DefaultRouter
 from .views import BrandViewSet,LaptopViewSet
 
 router = DefaultRouter()
 
-router.register(r'brands',BrandViewSet.as_view(),basename='brands')
-router.register(r'laptops',BrandViewSet,basename='laptop')
+router.register(r'laptops', LaptopViewSet, basename='laptops')
 
-urlpatterns = router.urls
+urlpatterns = [
+    path('brands/', BrandViewSet.as_view(), name='brand-list-create'),
+    path('', include(router.urls))
+]
 
