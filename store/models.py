@@ -17,6 +17,9 @@ class Laptop(models.Model):
     stock = models.IntegerField()
     image = models.ImageField(upload_to='laptops/',null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    processor = models.CharField(max_length=200, blank=True, null=True)
+    ram = models.CharField(max_length=100, blank=True, null=True)
+    storage = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return f"{self.brand.name} {self.model_name}"
