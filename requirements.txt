@@ -2,3 +2,5 @@ django
 djangorestframework
 psycopg2-binary
 pillow
+djangorestframework-simplejwt
+djangorestframework-simplejwt[blacklist]
