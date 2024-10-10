@@ -33,7 +33,7 @@ def register_user(request):
     except ValidationError as e:
         return Response({'error':str(e)},status=status.HTTP_400_BAD_REQUEST)
 
-@api_view('POST')
+@api_view(['POST'])
 def logout_view(request):
     try:
         refresh_token = request.data['refresh']
