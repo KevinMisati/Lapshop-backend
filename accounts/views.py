@@ -1,14 +1,18 @@
 from django.shortcuts import render
+from django.contrib.auth import authenticate
 
 # Create your views here.
 
-from rest_framework import status
+from rest_framework import status, serializers
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import update_last_login
+from rest_framework.authtoken.models import Token
+from .serializers import LoginSerializer
 
 @api_view(['POST'])
 def register_user(request):
@@ -42,3 +46,17 @@ def logout_view(request):
         return Response(status=status.HTTP_205_RESET_CONTENT)
     except Exception as e:
         return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['POST'])
+def custom_login_view(request):
+    serializer = LoginSerializer(data=request.data)
+    if(serializer.is_valid(raise_exception=True)):
+        user = serializer.validated_data['user']
+        token,created = Token.objects.get_or_create(user=user)
+        update_last_login(None, user)
+        return Response({
+            'token':token.key,
+            'user_id':user.id,
+            'email':user.email,
+        }, status=status.HTTP_200_OK)
+    return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)

@@ -40,12 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    #custom APPs
-    'store.apps.StoreConfig',
+    
     #Third party apps
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    #custom APPs
+    'store.apps.StoreConfig',
+    'accounts.apps.AccountsConfig',
 
 ]
 
@@ -114,6 +116,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend'
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -157,3 +164,5 @@ SIMPLE_JWT = {
     'ALGORITHIM':'HS256',
     'SIGNING_KEY':'django-insecure-g7p)((r^*zdd9n80@qpo-o^080_!k=@kbu=+wq)q5)4%y$fxag',
 }
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
