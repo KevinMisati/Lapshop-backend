@@ -1,4 +1,6 @@
 from django.db import models
+from .managers import CustomUserManager
+
 
 # Create your models here.
 
@@ -10,3 +12,7 @@ class CustomUser(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    objects = CustomUserManager()
+
+
