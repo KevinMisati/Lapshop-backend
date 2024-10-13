@@ -49,14 +49,21 @@ def logout_view(request):
     
 @api_view(['POST'])
 def custom_login_view(request):
-    serializer = LoginSerializer(data=request.data)
-    if(serializer.is_valid(raise_exception=True)):
-        user = serializer.validated_data['user']
-        token,created = Token.objects.get_or_create(user=user)
-        update_last_login(None, user)
+    email = request.data.get('email')
+    password = request.data.get('password')
+
+    if email is None or password is None:
+        return Response({'detail': 'Email and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = authenticate(request=request, email=email, password=password)
+
+    if user is not None:
+        refresh = RefreshToken.for_user(user)
         return Response({
-            'token':token.key,
-            'user_id':user.id,
-            'email':user.email,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'user_id': user.id,
+            'email': user.email,
         }, status=status.HTTP_200_OK)
-    return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response({'detail': 'Invalid email or password.'}, status=status.HTTP_401_UNAUTHORIZED)
