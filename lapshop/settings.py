@@ -96,7 +96,7 @@ DATABASES = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "dreamlaptop.netlify.app"
+    "https://dreamlaptop.netlify.app"
 ]
 
 
