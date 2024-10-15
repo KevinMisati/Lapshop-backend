@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     #Third party apps
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     #custom APPs
     'store.apps.StoreConfig',
@@ -163,6 +164,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION':True,
     'ALGORITHIM':'HS256',
     'SIGNING_KEY':'django-insecure-g7p)((r^*zdd9n80@qpo-o^080_!k=@kbu=+wq)q5)4%y$fxag',
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
