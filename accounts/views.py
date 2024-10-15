@@ -45,7 +45,7 @@ def logout_view(request):
         token.blacklist()
         return Response(status=status.HTTP_205_RESET_CONTENT)
     except Exception as e:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error':str(e)},status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['POST'])
 def custom_login_view(request):
