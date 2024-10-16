@@ -32,10 +32,11 @@ class LaptopViewSet(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = Laptop.objects.all()
 
-        trending = self.request.query_params('trending',None)
-        brand = self.request.query_params('brand',None)
+        trending = self.request.query_params.get('trending',None)
+        brand = self.request.query_params.get('brand',None)
 
         if trending is not None:
+            trending = trending.lower() == 'true'
             queryset = queryset.filter(trending=trending)
 
         if brand is not None:
