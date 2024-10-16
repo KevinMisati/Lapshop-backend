@@ -23,5 +23,10 @@ class Laptop(models.Model):
     storage = models.CharField(max_length=100, blank=True, null=True)
     trending = models.BooleanField(default=False)
 
+    def save(self,*args,**kwargs):
+        if not self.old_price:
+            self.old_price = self.price
+        super(Laptop,self).save(*args,**kwargs)
+
     def __str__(self):
         return f"{self.brand.name} {self.model_name}"
