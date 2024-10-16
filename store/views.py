@@ -23,7 +23,7 @@ class BrandViewSet(generics.ListCreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED,headers=headers)
 
-class LaptopViewSet(generics.ListCreateAPIView,generics.RetrieveUpdateDestroyAPIView):
+class LaptopViewSet(generics.ListCreateAPIView):
     queryset = Laptop.objects.all()
     serializer_class = LaptopSerializer
     filter_backends = [DjangoFilterBackend,filters.OrderingFilter]
@@ -55,5 +55,9 @@ class LaptopViewSet(generics.ListCreateAPIView,generics.RetrieveUpdateDestroyAPI
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED,headers=headers)
+
+class LaptopDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Laptop.objects.all()
+    serializer_class = LaptopSerializer
 
 
