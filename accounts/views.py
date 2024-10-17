@@ -6,13 +6,15 @@ from django.contrib.auth import authenticate
 from rest_framework import status, serializers
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import update_last_login
 from rest_framework.authtoken.models import Token
 from .serializers import LoginSerializer
+
+User = get_user_model()
 
 @api_view(['POST'])
 def register_user(request):
