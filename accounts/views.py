@@ -19,25 +19,33 @@ User = get_user_model()
 @api_view(['POST'])
 def register_user(request):
     try:
-        username = request.data['username']
-        password = request.data['password']
-        email = request.data.get('email','')
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        if not email or not password:
+            return Response({'error': 'Please provide both email and password.'}, status=status.HTTP_400_BAD_REQUEST)
 
         validate_password(password)
 
-        user = User.objects.create_user(username=username,password=password,email=email)
+        if User.objects.filter(email=email).exists():
+            return Response({'error': 'Email already in use.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.create_user(email=email, password=password)
+
         user.save()
-
         refresh = RefreshToken.for_user(user)
-
         return Response({
-            'refresh':str(refresh),
-            'access':str(refresh.access_token),
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'user_id': user.id,
+            'email': user.email,
         }, status=status.HTTP_201_CREATED)
-    except KeyError:
-        return Response({'error':'Please provide username and password'})
+
     except ValidationError as e:
-        return Response({'error':str(e)},status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': e.messages}, status=status.HTTP_400_BAD_REQUEST)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 def logout_view(request):
