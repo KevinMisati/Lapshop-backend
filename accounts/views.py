@@ -1,6 +1,11 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate
-
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.tokens import default_token_generator
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
+from django.utils.encoding import force_bytes
 # Create your views here.
 
 from rest_framework import status, serializers
@@ -77,3 +82,59 @@ def custom_login_view(request):
         }, status=status.HTTP_200_OK)
     else:
         return Response({'detail': 'Invalid email or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['POST'])
+def password_reset_request(request):
+    try:
+        email = request.data.get('email')
+        if not email:
+            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        associated_user = User.objects.filter(email=email).first()
+        if associated_user:
+            form = PasswordResetForm({'email': email})
+            if form.is_valid():
+                token = default_token_generator.make_token(associated_user)
+                uid = urlsafe_base64_encode(force_bytes(associated_user.pk))
+
+                reset_url = f"http://dreamlaptop.netlify.app/reset-password/{uid}/{token}/"
+
+                subject = 'Password Reset Requested'
+                email_template_name = 'password_reset_email.txt'
+                email_content = {
+                    'reset_url': reset_url,
+                    "user": associated_user,
+                }
+
+                email_body = render_to_string(email_template_name, email_content)
+
+                send_mail(subject, email_body, "kevinmosigisi2001@gmail.com", [associated_user.email])
+
+                return Response({"message": "Password reset email sent"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "No user found with this email address"}, status=status.HTTP_400_BAD_REQUEST)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+def password_reset_confirm(request,uidb64,token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk = uid)
+
+        if default_token_generator.check_token(user,token):
+            password = request.data.get('password')
+            if password:
+                user.set_password(password)
+                user.save()
+                return Response({"message": "Password has been reset successfully"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Password is required"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": "Invalid or expired token"}, status=status.HTTP_400_BAD_REQUEST)
+    except User.DoesNotExist:
+        return Response({"error": "Invalid token or user does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

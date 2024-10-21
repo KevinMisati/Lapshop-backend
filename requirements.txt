@@ -6,3 +6,4 @@ djangorestframework-simplejwt
 djangorestframework-simplejwt[blacklist]
 django-cors-headers
 django-filter
+django-environ
