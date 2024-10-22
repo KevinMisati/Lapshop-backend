@@ -98,7 +98,7 @@ def password_reset_request(request):
                 token = default_token_generator.make_token(associated_user)
                 uid = urlsafe_base64_encode(force_bytes(associated_user.pk))
 
-                reset_url = f"http://dreamlaptop.netlify.app/reset-password/{uid}/{token}/"
+                reset_url = f"http://dreamlaptop.netlify.app/account/reset-password/{uid}/{token}/"
 
                 subject = 'Password Reset Requested'
                 email_template_name = 'password_reset_email.txt'
