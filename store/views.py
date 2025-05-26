@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import viewsets,generics,status,filters
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Brand,Laptop
-from .serializers import BrandSerializer,LaptopSerializer
+from .models import Brand,Laptop, Category
+from .serializers import BrandSerializer,LaptopSerializer, CategorySerializer
 
 # Create your views here.
 
@@ -22,6 +22,12 @@ class BrandViewSet(generics.ListCreateAPIView):
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED,headers=headers)
+    
+
+class CategoryListViewSet(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
 
 class LaptopViewSet(generics.ListCreateAPIView):
     queryset = Laptop.objects.all()
