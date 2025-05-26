@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import viewsets,generics,status,filters
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Brand,Laptop, Category
-from .serializers import BrandSerializer,LaptopSerializer, CategorySerializer
+from .models import Brand,Product, Category
+from .serializers import BrandSerializer,ProductSerializer, CategorySerializer
 
 # Create your views here.
 
@@ -29,17 +29,18 @@ class CategoryListViewSet(generics.ListCreateAPIView):
     serializer_class = CategorySerializer
 
 
-class LaptopViewSet(generics.ListCreateAPIView):
-    queryset = Laptop.objects.all()
-    serializer_class = LaptopSerializer
+class ProductViewSet(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend,filters.OrderingFilter]
     filterset_fields = ['trending','brand']
 
     def get_queryset(self):
-        queryset = Laptop.objects.all()
+        queryset = Product.objects.all()
 
         trending = self.request.query_params.get('trending',None)
         brand = self.request.query_params.get('brand',None)
+        category = self.request.query_params.get('category',None)
 
         if trending is not None:
             trending = trending.lower() == 'true'
@@ -47,6 +48,8 @@ class LaptopViewSet(generics.ListCreateAPIView):
 
         if brand is not None:
             queryset = queryset.filter(brand=brand)
+        if category is not None:
+            queryset = queryset.filter(category=category)
         
         return queryset
 
@@ -62,8 +65,8 @@ class LaptopViewSet(generics.ListCreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED,headers=headers)
 
-class LaptopDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Laptop.objects.all()
-    serializer_class = LaptopSerializer
+class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
 

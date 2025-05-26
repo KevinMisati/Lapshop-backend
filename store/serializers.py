@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Brand,Laptop, Category
+from .models import Brand,Product, Category
 
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,9 +13,9 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class LaptopSerializer(serializers.ModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
     brand = BrandSerializer
 
     class Meta:
-        model = Laptop
+        model = Product
         fields = '__all__'
