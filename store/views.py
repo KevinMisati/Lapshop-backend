@@ -32,8 +32,9 @@ class CategoryListViewSet(generics.ListCreateAPIView):
 class ProductViewSet(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend,filters.OrderingFilter]
-    filterset_fields = ['trending','brand']
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    filterset_fields = ['trending','brand','category']
+    search_fields = ['model_name', 'brand__name', 'category__name']
 
     def get_queryset(self):
         queryset = Product.objects.all()
