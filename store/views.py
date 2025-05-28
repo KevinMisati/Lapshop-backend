@@ -33,7 +33,7 @@ class ProductViewSet(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-    filterset_fields = ['trending','brand','category']
+    filterset_fields = ['trending','brand','category','mostLoved']
     search_fields = ['model_name', 'brand__name', 'category__name']
 
     def get_queryset(self):
@@ -42,10 +42,15 @@ class ProductViewSet(generics.ListCreateAPIView):
         trending = self.request.query_params.get('trending',None)
         brand = self.request.query_params.get('brand',None)
         category = self.request.query_params.get('category',None)
+        mostLoved = self.request.query_params.get('mostLoved',None)
 
         if trending is not None:
             trending = trending.lower() == 'true'
             queryset = queryset.filter(trending=trending)
+        
+        if mostLoved is not None:
+            mostLoved = mostLoved.lower() == 'true'
+            queryset = queryset.filter(mostLoved=mostLoved)
 
         if brand is not None:
             queryset = queryset.filter(brand=brand)

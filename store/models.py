@@ -29,6 +29,8 @@ class Product(models.Model):
     ram = models.CharField(max_length=100, blank=True, null=True)
     storage = models.CharField(max_length=100, blank=True, null=True)
     trending = models.BooleanField(default=False)
+    mostLoved = models.BooleanField(default=False)
+
 
     def save(self,*args,**kwargs):
         if not self.old_price:
