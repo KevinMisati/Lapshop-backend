@@ -13,18 +13,25 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
-import environ
-# Initialize environment
-env = environ.Env()
+from dotenv import load_dotenv
+
 
 # Set base directory (2 levels up from settings.py)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Read .env file located at the base directory
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+env_path = BASE_DIR / ".env"
+
+
+
+
+from dotenv import dotenv_values
+
+env = dotenv_values(".env")
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -182,9 +189,12 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # Or another email service
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_USER = env.get('EMAIL_HOST_USER',"test here")
+EMAIL_HOST_PASSWORD = env.get('EMAIL_HOST_PASSWORD')
+
+print("EMAIL_HOST_USER:",EMAIL_HOST_USER)
+print("EMAIL_HOST_PASSWORD:", EMAIL_HOST_PASSWORD)
 

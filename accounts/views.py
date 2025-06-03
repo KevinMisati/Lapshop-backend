@@ -93,30 +93,27 @@ def password_reset_request(request):
 
         associated_user = User.objects.filter(email=email).first()
         if associated_user:
-            form = PasswordResetForm({'email': email})
-            if form.is_valid():
-                token = default_token_generator.make_token(associated_user)
-                uid = urlsafe_base64_encode(force_bytes(associated_user.pk))
+            token = default_token_generator.make_token(associated_user)
+            uid = urlsafe_base64_encode(force_bytes(associated_user.pk))
+            reset_url = f"http://dreamlaptop.netlify.app/account/reset-password/{uid}/{token}/"
 
-                reset_url = f"http://dreamlaptop.netlify.app/account/reset-password/{uid}/{token}/"
+            subject = 'Password Reset Requested'
+            email_template_name = 'password_reset_email.txt'
+            email_content = {
+                'reset_url': reset_url,
+                "user": associated_user,
+            }
 
-                subject = 'Password Reset Requested'
-                email_template_name = 'password_reset_email.txt'
-                email_content = {
-                    'reset_url': reset_url,
-                    "user": associated_user,
-                }
+            email_body = render_to_string(email_template_name, email_content)
 
-                email_body = render_to_string(email_template_name, email_content)
+            send_mail(subject, email_body, "kevinmosigisi2001@gmail.com", [associated_user.email])
 
-                send_mail(subject, email_body, "kevinmosigisi2001@gmail.com", [associated_user.email])
-
-                return Response({"message": "Password reset email sent"}, status=status.HTTP_200_OK)
-        else:
-            return Response({"error": "No user found with this email address"}, status=status.HTTP_400_BAD_REQUEST)
+        # Always return this message to prevent user enumeration
+        return Response({"message": "If an account with that email exists, a password reset link has been sent."}, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['POST'])
 def password_reset_confirm(request,uidb64,token):
