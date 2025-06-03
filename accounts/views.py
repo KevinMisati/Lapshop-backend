@@ -106,7 +106,7 @@ def password_reset_request(request):
 
             email_body = render_to_string(email_template_name, email_content)
 
-            send_mail(subject, email_body, "kevinmosigisi2001@gmail.com", [associated_user.email])
+            send_mail(subject, email_body, "kevinmosigisi001@gmail.com", [associated_user.email])
 
         # Always return this message to prevent user enumeration
         return Response({"message": "If an account with that email exists, a password reset link has been sent."}, status=status.HTTP_200_OK)

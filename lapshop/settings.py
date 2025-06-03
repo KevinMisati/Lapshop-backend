@@ -25,9 +25,6 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 env_path = BASE_DIR / ".env"
 
-
-
-
 from dotenv import dotenv_values
 
 env = dotenv_values(".env")
