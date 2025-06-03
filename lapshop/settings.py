@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
 
 # Set base directory (2 levels up from settings.py)
@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(os.path.join(BASE_DIR, '.env'))
+#load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 env_path = BASE_DIR / ".env"
 
@@ -189,9 +189,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = env.get('EMAIL_HOST_USER',"test here")
-EMAIL_HOST_PASSWORD = env.get('EMAIL_HOST_PASSWORD')
+# EMAIL_HOST_USER = env.get('EMAIL_HOST_USER',"test here")
+# EMAIL_HOST_PASSWORD = env.get('EMAIL_HOST_PASSWORD')
 
-print("EMAIL_HOST_USER:",EMAIL_HOST_USER)
-print("EMAIL_HOST_PASSWORD:", EMAIL_HOST_PASSWORD)
+# print("EMAIL_HOST_USER:",EMAIL_HOST_USER)
+# print("EMAIL_HOST_PASSWORD:", EMAIL_HOST_PASSWORD)
 
